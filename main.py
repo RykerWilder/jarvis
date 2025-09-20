@@ -1,26 +1,22 @@
 import speech_recognition as sr
 import pyttsx3
-import ollama
+from langchain_ollama import ChatOllama
 import os
 
 # Linux ALSA errors
 os.environ['ALSA_PCM_CARD'] = '0'
 os.environ['ALSA_PCM_DEVICE'] = '0'
 
-LLM = "deepseek-r1:1.5b"
+LLM = ChatOllama(model="deepseek-r1:1.5b", reasoning=False)
 
 def speech_recognizer():
-    
     # init
     r = sr.Recognizer()
-
     # microphone config
     with sr.Microphone() as source:
         print("Listening...")
-
         # ambient noise
         r.adjust_for_ambient_noise(source, duration=1)
-
         # listening
         audio = r.listen(source, timeout=5, phrase_time_limit=10)
     try:
@@ -35,39 +31,32 @@ def speech_recognizer():
         return None
 
 def text_to_speech(text):
-
     # init
     engine = pyttsx3.init()
-
     # Get available voices and use the first one
     voices = engine.getProperty('voices')
     if voices:
         engine.setProperty('voice', voices[0].id)
-    
     # parameters
     engine.setProperty('rate', 150)  # words speed
     engine.setProperty('volume', 0.9)  # volume (0.0 to 1.0)
     format_text = str(text)
     engine.say(format_text)
     engine.runAndWait()
-    engine.stop()
+    engine.stop()  
 
 def run_ollama(request):
-    prompt = [
-        {
-            'role': 'system',
-            'content': 'You are Jarvis, a voice assistant. Answer in maximum 1-2 sentences. Be brief, polite and slightly humorous. End each response with "Sir".'
-        },
-        {
-            'role': 'user',
-            'content': f' {request}'
-        }
+    system_prompt = "You are Jarvis, an intelligent, conversational AI assistant. Your goal is to be helpful, friendly, and informative. You can respond in natural, human-like language and use tools when needed to answer questions more accurately. Always explain your reasoning simply when appropriate, and keep your responses conversational and concise."
+    
+    messages = [
+        ("system", system_prompt),
+        ("user", request)
     ]
-
+    
     # response
-    response = ollama.chat(model=LLM, messages=prompt)
-    print("AI:", response['message']['content'])
-    return response['message']['content']
+    response = LLM.invoke(messages)
+    print("AI:", response.content)
+    return response.content
 
 if __name__ == "__main__":
     user_text = speech_recognizer()
