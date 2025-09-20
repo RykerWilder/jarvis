@@ -1,18 +1,14 @@
-import speech_recognition as sr
-import pyttsx3
 from langchain_ollama import ChatOllama
-import os
-import os
 from dotenv import load_dotenv
-
-load_dotenv()
-
+import speech_recognition as sr
+import os
+import pyttsx3
 
 # Linux ALSA errors
 os.environ['ALSA_PCM_CARD'] = '0'
 os.environ['ALSA_PCM_DEVICE'] = '0'
 
-LLM = ChatOllama(model=os.getenv('OLLAMA_MODEL'), reasoning=False)
+load_dotenv()
 
 def speech_recognizer():
 
@@ -57,7 +53,8 @@ def text_to_speech(text):
     engine.stop()  
 
 def run_ollama(request):
-    system_prompt = os.getenv('SYSTEM_PROMPT')
+    LLM = ChatOllama(model=os.getenv('OLLAMA_MODEL'), reasoning=False)
+    system_prompt = "You are Jarvis, an intelligent, conversational AI assistant. Your goal is to be helpful, friendly, and informative. You can respond in natural, human-like language and use tools when needed to answer questions more accurately. Always explain your reasoning simply when appropriate, and keep your responses conversational and concise."
     
     messages = [
         ("system", system_prompt),
@@ -69,8 +66,23 @@ def run_ollama(request):
     print("AI:", response.content)
     return response.content
 
+def jarvis_manager():
+
+    while True:
+        try:
+            user_text = speech_recognizer()
+            if user_text.lower() == os.getenv('TRIGGER_WORD').lower():
+                text_to_speech("Hi Sir, how can i help you?")
+                ollama_response = run_ollama(speech_recognizer())
+                text_to_speech(ollama_response)
+            elif user_text.lower() ==os.getenv('SHUTDOWN_WORD').lower():
+                text_to_speech("Goodbye Sir.")
+                break
+        except KeyboardInterrupt:
+            print("Jarvis interrupted.")
+            break
+        except Exception as e:
+            print(f"Error: {e}")
+
 if __name__ == "__main__":
-    user_text = speech_recognizer()
-    if user_text:
-        ollama_response = run_ollama(user_text)
-        text_to_speech(ollama_response)
+    jarvis_manager()
