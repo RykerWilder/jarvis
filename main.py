@@ -1,10 +1,13 @@
 import speech_recognition as sr
 import pyttsx3
+import ollama
 import os
 
 # Linux ALSA errors
 os.environ['ALSA_PCM_CARD'] = '0'
 os.environ['ALSA_PCM_DEVICE'] = '0'
+
+LLM = "deepseek-r1:1.5b"
 
 def speech_recognizer():
     # init
@@ -39,8 +42,32 @@ def text_to_speech(text):
     engine.setProperty('volume', 0.9)      # volume (0.0 to 1.0)
     engine.setProperty('voice', 'italian') # langauge
 
-    engine.say(text)
+    format_text = str(text)
+    engine.say(format_text)
     engine.runAndWait()
 
+def run_ollama(request):
+
+    prompt = [
+        {
+            'role': 'system', 
+            'content': 'You are Jarvis, a voice assistant. Be polite and slightly humorous. End each response with "Sir".'
+        },
+        {
+            'role': 'user', 
+            'content': f' {request}'
+        }
+    ]
+
+    # response
+    response = ollama.chat(model=LLM, messages=prompt)
+    print("AI:", response['message']['content'])
+
+    return response['message']['content']
+
+
 if __name__ == "__main__":
-    text_to_speech(speech_recognizer())
+    user_text = speech_recognizer()
+    ollama_response = run_ollama(user_text)
+    text_to_speech(ollama_response)
+    
