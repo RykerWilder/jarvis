@@ -10,13 +10,17 @@ os.environ['ALSA_PCM_DEVICE'] = '0'
 LLM = ChatOllama(model="deepseek-r1:1.5b", reasoning=False)
 
 def speech_recognizer():
+
     # init
     r = sr.Recognizer()
+
     # microphone config
     with sr.Microphone() as source:
         print("Listening...")
+
         # ambient noise
         r.adjust_for_ambient_noise(source, duration=1)
+
         # listening
         audio = r.listen(source, timeout=5, phrase_time_limit=10)
     try:
@@ -33,12 +37,14 @@ def speech_recognizer():
 def text_to_speech(text):
     # init
     engine = pyttsx3.init()
+
     # Get available voices and use the first one
     voices = engine.getProperty('voices')
     if voices:
         engine.setProperty('voice', voices[0].id)
+    
     # parameters
-    engine.setProperty('rate', 150)  # words speed
+    engine.setProperty('rate', 130)    # words speed
     engine.setProperty('volume', 0.9)  # volume (0.0 to 1.0)
     format_text = str(text)
     engine.say(format_text)

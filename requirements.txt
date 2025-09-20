@@ -15,6 +15,7 @@ langchain-core==0.3.76
 langchain-ollama==0.3.8
 langchain-text-splitters==0.3.11
 langsmith==0.4.29
+ollama==0.5.4
 orjson==3.11.3
 packaging==25.0
 pip-autoremove==0.10.0
