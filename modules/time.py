@@ -2,20 +2,29 @@ import time
 import threading
 import sys
 import os
+from datetime import datetime
+from sound import Sound
 
-def background_timer(seconds=0, minutes=0, hours=0):
-    """
-    Timer that runs in background (non-blocking).
-    Returns the timer object so you can cancel it with timer.cancel()
-    """
-    total_time = hours * 3600 + minutes * 60 + seconds
-    
-    timer_obj = threading.Timer(total_time, play_beep_sound())
-    timer_obj.start()
-    return timer_obj
+class Time:
+    def background_timer(self, seconds=0, minutes=0, hours=0):
+        """
+        Timer that runs in background (non-blocking).
+        Returns the timer object so you can cancel it with timer.cancel()
+        """
+        total_time = hours * 3600 + minutes * 60 + seconds
+
+        sound = Sound()
+        
+        timer_obj = threading.Timer(total_time, sound.play_beep_sound())
+        timer_obj.start()
+        return timer_obj
+
+    def get_time(self):
+        return datetime.now().strftime("%H:%M")
 
 # Examples
 if __name__ == "__main__":
     print("Starting 5-second timer...")
+    time = Time()
     # Background timer (doesn't block)
-    bg_timer = background_timer(seconds=5)
+    bg_timer = time.background_timer(seconds=5)
