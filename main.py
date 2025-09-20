@@ -43,7 +43,7 @@ def text_to_speech(text):
     # init
     engine = pyttsx3.init()
 
-    # Get available voices and use the first one
+    # get available voices and use the first one
     voices = engine.getProperty('voices')
     if voices:
         engine.setProperty('voice', voices[0].id)
