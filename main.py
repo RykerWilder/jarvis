@@ -2,12 +2,17 @@ import speech_recognition as sr
 import pyttsx3
 from langchain_ollama import ChatOllama
 import os
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 # Linux ALSA errors
 os.environ['ALSA_PCM_CARD'] = '0'
 os.environ['ALSA_PCM_DEVICE'] = '0'
 
-LLM = ChatOllama(model="deepseek-r1:1.5b", reasoning=False)
+LLM = ChatOllama(model=os.getenv('OLLAMA_MODEL'), reasoning=False)
 
 def speech_recognizer():
 
@@ -52,7 +57,7 @@ def text_to_speech(text):
     engine.stop()  
 
 def run_ollama(request):
-    system_prompt = "You are Jarvis, an intelligent, conversational AI assistant. Your goal is to be helpful, friendly, and informative. You can respond in natural, human-like language and use tools when needed to answer questions more accurately. Always explain your reasoning simply when appropriate, and keep your responses conversational and concise."
+    system_prompt = os.getenv('SYSTEM_PROMPT')
     
     messages = [
         ("system", system_prompt),
