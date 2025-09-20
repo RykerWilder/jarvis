@@ -1,4 +1,5 @@
 import speech_recognition as sr
+import pyttsx3
 import os
 
 # Linux ALSA errors
@@ -22,11 +23,24 @@ def speech_recognizer():
         try:
             text = r.recognize_google(audio, language="it-IT")
             print(f"You said: {text}")
+            return text
             
         except sr.UnknownValueError:
             print("I didn't undestand.")
         except sr.RequestError as e:
             print(f"Error: {e}")
 
+def text_to_speech(text): 
+    # init
+    engine = pyttsx3.init()
+
+    # parameters
+    engine.setProperty('rate', 150)        # words speed
+    engine.setProperty('volume', 0.9)      # volume (0.0 to 1.0)
+    engine.setProperty('voice', 'italian') # langauge
+
+    engine.say(text)
+    engine.runAndWait()
+
 if __name__ == "__main__":
-    speech_recognizer()
+    text_to_speech(speech_recognizer())
