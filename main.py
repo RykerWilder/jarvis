@@ -1,13 +1,18 @@
-from langchain_ollama import ChatOllama
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
+from langchain_ollama import ChatOllama
 
+#modules
+from modules.voice import Voice
 
 # Linux ALSA errors
 os.environ['ALSA_PCM_CARD'] = '0'
 os.environ['ALSA_PCM_DEVICE'] = '0'
 
 load_dotenv()
+
+# istances
+voice = Voice()
 
 def run_ollama(request):
     LLM = ChatOllama(model=os.getenv('OLLAMA_MODEL'), reasoning=False)
@@ -27,11 +32,12 @@ def jarvis_manager():
 
     while True:
         try:
-            user_text = speech_recognizer()
+            user_text = voice.speech_recognizer()
+            voice.text_to_speech("Say the trigger word to activate.")
             if user_text.lower() == os.getenv('TRIGGER_WORD').lower():
-                text_to_speech("Hi Sir, how can i help you?")
-                ollama_response = run_ollama(speech_recognizer())
-                text_to_speech(ollama_response)
+                voice.text_to_speech("Hi Sir, how can i help you?")
+                ollama_response = run_ollama(voice.speech_recognizer())
+                voice.text_to_speech(ollama_response)
             elif user_text.lower() ==os.getenv('SHUTDOWN_WORD').lower():
                 text_to_speech("Goodbye Sir.")
                 break
