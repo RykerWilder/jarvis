@@ -11,6 +11,8 @@ os.environ['ALSA_PCM_DEVICE'] = '0'
 
 load_dotenv()
 
+
+
 # istances
 voice = Voice()
 
@@ -29,21 +31,26 @@ def run_ollama(request):
     return response.content
 
 def jarvis_manager():
+    CONVERSATION_MODE = False
 
-    while True:
+    voice.text_to_speech("Say the trigger word to activate.")
+    user_text = voice.speech_recognizer()
+
+    if user_text.lower() == os.getenv('TRIGGER_WORD').lower():
+        CONVERSATION_MODE = True
+        voice.text_to_speech("Hi Sir, how can i help you?")
+
+    while CONVERSATION_MODE:
         try:
-            user_text = voice.speech_recognizer()
-            voice.text_to_speech("Say the trigger word to activate.")
-            if user_text.lower() == os.getenv('TRIGGER_WORD').lower():
-                voice.text_to_speech("Hi Sir, how can i help you?")
+            if user_text.lower() ==os.getenv('SHUTDOWN_WORD').lower():
+                voice.text_to_speech("Goodbye Sir.")
+                break
+            else:
                 ollama_response = run_ollama(voice.speech_recognizer())
                 voice.text_to_speech(ollama_response)
-            elif user_text.lower() ==os.getenv('SHUTDOWN_WORD').lower():
-                text_to_speech("Goodbye Sir.")
-                break
         except KeyboardInterrupt:
-            print("Jarvis interrupted.")
-            break
+            voice.text_to_speech("Goodbye Sir.")
+            CONVERSATION_MODE = False
         except Exception as e:
             print(f"Error: {e}")
 
