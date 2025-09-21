@@ -39,7 +39,7 @@ class Voice:
         # parameters
         engine.setProperty('rate', 130)    # words speed
         engine.setProperty('volume', 0.9)  # volume (0.0 to 1.0)
-        format_text = str(self.text)
+        format_text = str(text)
         engine.say(format_text)
         engine.runAndWait()
         engine.stop()  
