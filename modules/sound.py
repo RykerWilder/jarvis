@@ -103,11 +103,3 @@ class Sound:
                 print('\a' * 3)  # Fallback terminal beep
         else:
             print('\a' * 3)  # Fallback if sound generation failed
-
-
-# Esempio di utilizzo:
-if __name__ == "__main__":
-    sound = Sound()
-    
-    # Riproduci il suono
-    sound.play_beep_sound()

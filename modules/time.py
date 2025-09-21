@@ -21,10 +21,3 @@ class Time:
 
     def get_time(self):
         return datetime.now().strftime("%H:%M")
-
-# Examples
-if __name__ == "__main__":
-    print("Starting 5-second timer...")
-    time = Time()
-    # Background timer (doesn't block)
-    bg_timer = time.background_timer(seconds=5)
