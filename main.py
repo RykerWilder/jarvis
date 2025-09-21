@@ -36,6 +36,7 @@ def jarvis_manager():
 
     while CONVERSATION_MODE:
         try:
+            user_text = voice.speech_recognizer()
             if user_text.lower() ==os.getenv('SHUTDOWN_WORD').lower():
                 voice.text_to_speech("Goodbye Sir.")
                 break
