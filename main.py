@@ -5,16 +5,10 @@ from langchain_ollama import ChatOllama
 #modules
 from modules.voice import Voice
 
-# Linux ALSA errors
-os.environ['ALSA_PCM_CARD'] = '0'
-os.environ['ALSA_PCM_DEVICE'] = '0'
-
-load_dotenv()
-
-
-
 # istances
 voice = Voice()
+
+load_dotenv()
 
 def run_ollama(request):
     LLM = ChatOllama(model=os.getenv('OLLAMA_MODEL'), reasoning=False)
