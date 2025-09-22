@@ -42,4 +42,4 @@ class Voice:
         format_text = str(text)
         engine.say(format_text)
         engine.runAndWait()
-        engine.stop()  
+        engine.stop()
