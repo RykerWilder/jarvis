@@ -57,7 +57,7 @@ def jarvis_manager():
             
             if shutdown_command(user_text):
                 voice.text_to_speech("Goodbye Sir.")
-                break
+                CONVERSATION_MODE = False
             else:
                 ollama_response = run_ollama(user_text)
                 voice.text_to_speech(ollama_response)
