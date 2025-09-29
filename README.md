@@ -16,3 +16,10 @@ bash ./installer.sh
 ```
 
 After running the installer, follow the instructions in your terminal to activate Jarvis.
+
+## Tools
+
+Jarvis already has some tools inside including:
+
+- Speedtest (if you are connected to a network)
+- Set timer with alarm
