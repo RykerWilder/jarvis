@@ -14,12 +14,12 @@ net = Network()
 tools = [
     Tool(
         name="SpeedTest",
-        func=speedtest_tool,
+        func=net.execute_speedtest,
         description="Useful for testing internet speed, measuring download/upload speed, and checking connection performance"
     ),
     Tool(
-        name="ConnectionCheck", 
-        func=connection_tool,
+        name="ConnectionCheck",
+        func=net.check_connection,
         description="Useful for checking internet connection status, verifying connectivity, and diagnosing network issues"
     )
 ]
@@ -28,41 +28,43 @@ load_dotenv()
 
 def run_ollama(request):
     # ollama configuration
-    LLM = ChatOllama(model=os.getenv('OLLAMA_MODEL'), reasoning=False)
-
+    LLM = ChatOllama(model=os.getenv('OLLAMA_MODEL'), reasoning=False, temperature=0)
+    
     # agent creation
     agent = initialize_agent(
         tools=tools,
         llm=LLM,
-        agent=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION,
+        agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
         verbose=False,
         handle_parsing_errors=True,
-        max_iterations=3
+        max_iterations=3,
+        return_intermediate_steps=False,
+        early_stopping_method="generate"
     )
-
+    
     # prompt
-    system_prompt = """You are Jarvis, an intelligent, conversational AI assistant. 
+    system_prompt = """You are Jarvis, an intelligent, conversational AI assistant.
     Your goal is to be helpful, friendly, and informative. You can use available tools when needed to answer questions more accurately.
+    
     Available tools:
     - SpeedTest: for testing internet speed and performance
-    - ConnectionCheck: for checking internet connection status Always respond using only plain text without emoticons or emojis."""   
+    - ConnectionCheck: for checking internet connection status
     
-    messages = [
-        ("system", system_prompt),
-        ("user", request)
-    ]
+    Always respond using only plain text without emoticons or emojis."""
     
-    # response
-    response = LLM.invoke(messages)
-    print("Jarvis:", response.content)
-    return response.content
+    full_request = f"{system_prompt}\n\nUser: {request}"
+    
+    response = agent.invoke({"input": full_request})
+    
+    final_output = response.get("output", "I couldn't process that request.")
+    
+    print("Jarvis:", final_output)
+    return final_output 
 
 def shutdown_command(text):
     if not text:
         return False
-    
     text = text.lower().strip()
-    
     shutdown_phrases_str = os.getenv('SHUTDOWN_PHRASES', '')
     shutdown_phrases = [phrase.strip() for phrase in shutdown_phrases_str.split(',') if phrase.strip()]
     return any(phrase in text for phrase in shutdown_phrases)
@@ -70,8 +72,8 @@ def shutdown_command(text):
 def jarvis_manager():
     CONVERSATION_MODE = False
     voice.text_to_speech("Say the trigger word to activate.")
-    
     user_text = voice.speech_recognizer()
+    
     if user_text is None:
         voice.text_to_speech("I didn't hear anything.")
         return
@@ -87,7 +89,7 @@ def jarvis_manager():
     while CONVERSATION_MODE:
         try:
             user_text = voice.speech_recognizer()
-
+            
             if user_text is None:
                 voice.text_to_speech("I didn't hear anything. Please try again.")
                 continue
@@ -98,7 +100,7 @@ def jarvis_manager():
             else:
                 ollama_response = run_ollama(user_text)
                 voice.text_to_speech(ollama_response)
-                
+        
         except KeyboardInterrupt:
             voice.text_to_speech("Goodbye Sir.")
             CONVERSATION_MODE = False
