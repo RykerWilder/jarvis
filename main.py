@@ -16,7 +16,6 @@ tools = [net.execute_speedtest, net.check_connection]
 load_dotenv()
 
 def run_ollama(request):
-
     # ollama configuration
     LLM = ChatOllama(model=os.getenv('OLLAMA_MODEL'), reasoning=False)
 
@@ -35,6 +34,7 @@ def run_ollama(request):
         ("system", system_prompt),
         ("user", request)
     ]
+    
     # response
     response = LLM.invoke(messages)
     print("Jarvis:", response.content)
