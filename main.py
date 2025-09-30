@@ -10,8 +10,19 @@ from modules.network import Network
 voice = Voice()
 net = Network()
 
-# modules for langchain tool
-tools = [net.execute_speedtest, net.check_connection]
+# langchain tools
+tools = [
+    Tool(
+        name="SpeedTest",
+        func=speedtest_tool,
+        description="Useful for testing internet speed, measuring download/upload speed, and checking connection performance"
+    ),
+    Tool(
+        name="ConnectionCheck", 
+        func=connection_tool,
+        description="Useful for checking internet connection status, verifying connectivity, and diagnosing network issues"
+    )
+]
 
 load_dotenv()
 
@@ -25,11 +36,17 @@ def run_ollama(request):
         llm=LLM,
         agent=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION,
         verbose=False,
-        handle_parsing_errors=True
+        handle_parsing_errors=True,
+        max_iterations=3
     )
 
     # prompt
-    system_prompt = "You are Jarvis, an intelligent, conversational AI assistant. Your goal is to be helpful, friendly, and informative. You can respond in natural, human-like language and use tools when needed to answer questions more accurately. Always respond using only plain text without emoticons or emojis."   
+    system_prompt = """You are Jarvis, an intelligent, conversational AI assistant. 
+    Your goal is to be helpful, friendly, and informative. You can use available tools when needed to answer questions more accurately.
+    Available tools:
+    - SpeedTest: for testing internet speed and performance
+    - ConnectionCheck: for checking internet connection status Always respond using only plain text without emoticons or emojis."""   
+    
     messages = [
         ("system", system_prompt),
         ("user", request)
