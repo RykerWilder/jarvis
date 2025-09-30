@@ -1,11 +1,16 @@
 import os
 from dotenv import load_dotenv
 from langchain_ollama import ChatOllama
+from langchain.agents import initialize_agent, AgentType, Tool
 # modules
 from modules.voice import Voice
+from modules.network import Network
 
 # instances
 voice = Voice()
+net = Network()
+tools = [net.speedtest_tool, net.check_connection]
+
 load_dotenv()
 
 def run_ollama(request):
