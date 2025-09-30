@@ -9,12 +9,27 @@ from modules.network import Network
 # instances
 voice = Voice()
 net = Network()
-tools = [net.speedtest_tool, net.check_connection]
+
+# modules for langchain tool
+tools = [net.execute_speedtest, net.check_connection]
 
 load_dotenv()
 
 def run_ollama(request):
+
+    # ollama configuration
     LLM = ChatOllama(model=os.getenv('OLLAMA_MODEL'), reasoning=False)
+
+    # agent creation
+    agent = initialize_agent(
+        tools=tools,
+        llm=LLM,
+        agent=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION,
+        verbose=False,
+        handle_parsing_errors=True
+    )
+
+    # prompt
     system_prompt = "You are Jarvis, an intelligent, conversational AI assistant. Your goal is to be helpful, friendly, and informative. You can respond in natural, human-like language and use tools when needed to answer questions more accurately. Always respond using only plain text without emoticons or emojis."   
     messages = [
         ("system", system_prompt),

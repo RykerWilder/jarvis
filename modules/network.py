@@ -1,4 +1,4 @@
-from voice import Voice
+from modules.voice import Voice
 import urllib.request
 import socket
 import speedtest
