@@ -4,7 +4,7 @@ import requests
 import speedtest
 import webbrowser
 from urllib.parse import quote_plus
-from bs4 import BeautifulSoup
+import pywhatkit as kit
 
 class Network: 
     def check_connection(self, input_text=""):
@@ -35,35 +35,13 @@ class Network:
     def play_music(self, song, artist):
         if self.check_connection():
             try:
-                # query creation
+                # query
                 query = f"{song} {artist}"
-                query_encoded = quote_plus(query)
+                kit.playonyt(query)
                 
-                # URL
-                search_url = f"https://www.youtube.com/results?search_query={query_encoded}"
-                
-                # request
-                headers = {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-                }
-                response = requests.get(search_url, headers=headers)
-                
-                # looking for first result
-                if 'watch?v=' in response.text:
-                    start = response.text.find('watch?v=') + 8
-                    video_id = response.text[start:start+11]
-                    
-                    # video URL
-                    video_url = f"https://www.youtube.com/watch?v={video_id}"
-                    
-                    # open first result
-                    webbrowser.open(video_url)
-                    
-                    return f"Playing {music} - {artist}"
-                else:
-                    return f"No results found for: {music} - {artist}"
+                return f"Playing {song} - {artist}"
             
             except Exception as e:
-                return f"error during playback: {str(e)}"
+                return f"Error during playback: {str(e)}"
         else:
             return "I don't have access to the internet."
