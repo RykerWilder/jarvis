@@ -21,6 +21,11 @@ tools = [
         name="ConnectionCheck",
         func=net.check_connection,
         description="Useful for checking internet connection status, verifying connectivity, and diagnosing network issues"
+    ),
+    Tool(
+        name="PlayingMusic",
+        func=net.play_music,
+        description="Plays music on YouTube by searching for song name and artist. Use this when user asks to play, listen to, or put on a song. Automatically finds and plays the first matching result in the browser. Examples: 'play Bohemian Rhapsody by Queen', 'I want to listen to Imagine by John Lennon'."
     )
 ]
 
