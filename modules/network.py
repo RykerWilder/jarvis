@@ -32,52 +32,38 @@ class Network:
         else:
             return "I don't have access to the internet."
 
-    def riproduci_musica(self, canzone, artista):
-        """
-        Riproduce automaticamente una canzone su YouTube cercando per nome canzone e artista.
-        
-        Args:
-            canzone: Il nome della canzone da riprodurre
-            artista: Il nome dell'artista
-            
-        Returns:
-            Messaggio di conferma
-        """
-        try:
-            # Crea la query di ricerca
-            query = f"{canzone} {artista}"
-            query_encoded = quote_plus(query)
-            
-            # URL di ricerca YouTube
-            search_url = f"https://www.youtube.com/results?search_query={query_encoded}"
-            
-            # Fai una richiesta alla pagina di ricerca
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-            }
-            response = requests.get(search_url, headers=headers)
-            
-            # Cerca il primo video ID nella pagina
-            if 'watch?v=' in response.text:
-                # Estrai il primo video ID
-                start = response.text.find('watch?v=') + 8
-                video_id = response.text[start:start+11]
+    def play_music(self, song, artist):
+        if self.check_connection():
+            try:
+                # query creation
+                query = f"{song} {artist}"
+                query_encoded = quote_plus(query)
                 
-                # Costruisci l'URL del video
-                video_url = f"https://www.youtube.com/watch?v={video_id}"
+                # URL
+                search_url = f"https://www.youtube.com/results?search_query={query_encoded}"
                 
-                # Apre il video direttamente
-                webbrowser.open(video_url)
+                # request
+                headers = {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                }
+                response = requests.get(search_url, headers=headers)
                 
-                return f"Riproduzione di: {canzone} - {artista}"
-            else:
-                return f"Nessun risultato trovato per: {canzone} - {artista}"
-        
-        except Exception as e:
-            return f"Errore durante la riproduzione: {str(e)}"
-
-if __name__ == "__main__":
-    # Test della funzione
-    net = Network()
-    risultato = net.riproduci_musica("Capo Status", "Emis Killa")
-    print(risultato)
+                # looking for first result
+                if 'watch?v=' in response.text:
+                    start = response.text.find('watch?v=') + 8
+                    video_id = response.text[start:start+11]
+                    
+                    # video URL
+                    video_url = f"https://www.youtube.com/watch?v={video_id}"
+                    
+                    # open first result
+                    webbrowser.open(video_url)
+                    
+                    return f"Playing {music} - {artist}"
+                else:
+                    return f"No results found for: {music} - {artist}"
+            
+            except Exception as e:
+                return f"error during playback: {str(e)}"
+        else:
+            return "I don't have access to the internet."
