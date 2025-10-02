@@ -1,4 +1,5 @@
 backports.tarfile==1.2.0
+beautifulsoup4==4.14.2
 greenlet==3.2.4
 importlib-metadata==8.0.0
 jaraco.collections==5.1.0
