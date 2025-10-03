@@ -15,7 +15,7 @@ class Network:
             urllib.request.urlopen("http://www.google.com", timeout=5)
             return True
         except (urllib.error.URLError, socket.timeout):
-            return "I don't have access to the internet."
+            return False
 
     def execute_speedtest(self, input_text=""):
         """
@@ -46,5 +46,18 @@ class Network:
             
             except Exception as e:
                 return f"Error during playback: {str(e)}"
+        else:
+            return "I don't have access to the internet."
+
+    def search(self, query):
+        """
+        Execute a Google search
+        """
+        if self.check_connection:
+            try:
+                kit.search(query)
+                return f"Search for '{query}' completed successfully"
+            except Exception as e:
+                return f"Search {query} failed."
         else:
             return "I don't have access to the internet."
