@@ -18,6 +18,9 @@ class Network:
             return "I don't have access to the internet."
 
     def execute_speedtest(self, input_text=""):
+        """
+        playing speedtest after check internet connection
+        """
         if self.check_connection():
             st = speedtest.Speedtest()
             
@@ -35,8 +38,6 @@ class Network:
     def play_music(self, query):
         """
         Plays music on YouTube based on search query
-        Args:
-            query (str): Song name and artist (e.g., "Breaking the issues Rihanna")
         """
         if self.check_connection():
             try:
