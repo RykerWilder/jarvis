@@ -21,5 +21,6 @@ After running the installer, follow the instructions in your terminal to activat
 
 Jarvis already has some tools inside including:
 
+- Check internet connection
 - Speedtest (if you are connected to a network)
-- Set timer with alarm
+- Play music on youtube (if you are connected to a network)
