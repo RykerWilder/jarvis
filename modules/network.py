@@ -5,6 +5,10 @@ import speedtest
 import webbrowser
 from urllib.parse import quote_plus
 import pywhatkit as kit
+from modules.voice import Voice
+
+#instances
+voice = Voice()
 
 class Network: 
     def check_connection(self, input_text=""):
@@ -22,6 +26,7 @@ class Network:
         playing speedtest after check internet connection
         """
         if self.check_connection():
+            voice.text_to_speech("Starting speedtest, please attend.")
             st = speedtest.Speedtest()
             
             # download
