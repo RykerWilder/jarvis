@@ -40,7 +40,6 @@ class Network:
         """
         if self.check_connection():
             try:
-                # Usa direttamente la query fornita
                 kit.playonyt(query)
                 return f"Playing {query} on YouTube"
             
