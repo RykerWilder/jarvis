@@ -32,14 +32,17 @@ class Network:
         else:
             return "I don't have access to the internet."
 
-    def play_music(self, song, artist):
+    def play_music(self, query):
+        """
+        Plays music on YouTube based on search query
+        Args:
+            query (str): Song name and artist (e.g., "Breaking the issues Rihanna")
+        """
         if self.check_connection():
             try:
-                # query
-                query = f"{song} {artist}"
+                # Usa direttamente la query fornita
                 kit.playonyt(query)
-                
-                return f"Playing {song} - {artist}"
+                return f"Playing {query} on YouTube"
             
             except Exception as e:
                 return f"Error during playback: {str(e)}"

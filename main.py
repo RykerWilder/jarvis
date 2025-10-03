@@ -54,6 +54,7 @@ def run_ollama(request):
     Available tools:
     - SpeedTest: for testing internet speed and performance
     - ConnectionCheck: for checking internet connection status
+    - MusicPlayer: for playing music on YouTube - use this when user asks to play music, songs, or videos
     
     Always respond using only plain text without emoticons or emojis."""
     
