@@ -43,9 +43,9 @@ class Network:
                 result = f"Speed test completed. Download speed: {download_speed:.2f} Mbps, Upload speed: {upload_speed:.2f} Mbps."
                 return result
             except Exception as e:
-                return f"Error during speedtest {os.getenv(USER_TITLE)}."
+                return f"Error during speedtest {os.getenv("USER_TITLE")}."
         else:
-            return f"I don't have access to the internet {os.getenv(USER_TITLE)}."
+            return f"I don't have access to the internet {os.getenv("USER_TITLE")}."
 
     def play_music(self, query):
         """
@@ -54,12 +54,12 @@ class Network:
         if self.check_connection():
             try:
                 kit.playonyt(query)
-                return f"Playing {query} on YouTube {os.getenv(USER_TITLE)}."
+                return f"Playing {query} on YouTube {os.getenv("USER_TITLE")}."
             
             except Exception as e:
                 return f"Error during playback: {str(e)}"
         else:
-            return f"I don't have access to the internet {os.getenv(USER_TITLE)}."
+            return f"I don't have access to the internet {os.getenv("USER_TITLE")}."
 
     def search(self, query):
         """
@@ -68,8 +68,8 @@ class Network:
         if self.check_connection:
             try:
                 kit.search(query)
-                return f"Search for '{query}' completed successfully {os.getenv(USER_TITLE)}."
+                return f"Search for '{query}' completed successfully {os.getenv("USER_TITLE")}."
             except Exception as e:
-                return f"Search {query} failed {os.getenv(USER_TITLE)}."
+                return f"Search {query} failed {os.getenv("USER_TITLE")}."
         else:
-            return f"I don't have access to the internet {os.getenv(USER_TITLE)}."
+            return f"I don't have access to the internet {os.getenv("USER_TITLE")}."

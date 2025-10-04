@@ -27,4 +27,4 @@ class Time:
         Get current_time
         """
         current_time = datetime.now().strftime("%H:%M")
-        return f"It's {current_time} {os.getenv(USER_TITLE)}."
+        return f"It's {current_time} {os.getenv("USER_TITLE")}."
