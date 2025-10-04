@@ -2,8 +2,11 @@ import time
 import threading
 import sys
 import os
+from dotenv import load_dotenv
 from datetime import datetime
 from modules.sound import Sound
+
+load_dotenv()
 
 class Time:
     def background_timer(self, seconds=0, minutes=0, hours=0):
@@ -20,5 +23,8 @@ class Time:
         return timer_obj
 
     def get_time(self, input_text=""):
+        """
+        Get current_time
+        """
         current_time = datetime.now().strftime("%H:%M")
-        return f"It's {current_time} Sir."
+        return f"It's {current_time} {os.getenv(USER_TITLE)}."

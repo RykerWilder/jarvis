@@ -75,29 +75,29 @@ def jarvis_manager():
     
     if user_text.lower() == os.getenv('TRIGGER_WORD').lower():
         CONVERSATION_MODE = True
-        voice.text_to_speech("Hi Sir, how can I help you?")
+        voice.text_to_speech(f"Hi {os.getenv(USER_TITLE)}, how can I help you?")
     elif shutdown_command(user_text):
-        voice.text_to_speech("Goodbye Sir.")
+        voice.text_to_speech(f"Goodbye {os.getenv(USER_TITLE)}.")
     else:
-        voice.text_to_speech("Sorry Sir, I didn't understand.")
+        voice.text_to_speech(f"Sorry {os.getenv(USER_TITLE)}, I didn't understand.")
     
     while CONVERSATION_MODE:
         try:
             user_text = voice.speech_recognizer()
             
             if user_text is None:
-                voice.text_to_speech("I didn't hear anything. Please try again.")
+                voice.text_to_speech(f"I didn't hear well {os.getenv(USER_TITLE)}. Please try again.")
                 continue
             
             if shutdown_command(user_text):
-                voice.text_to_speech("Goodbye Sir.")
+                voice.text_to_speech(f"Goodbye {os.getenv(USER_TITLE)}.")
                 CONVERSATION_MODE = False
             else:
                 ollama_response = run_ollama(user_text)
                 voice.text_to_speech(ollama_response)
         
         except KeyboardInterrupt:
-            voice.text_to_speech("Goodbye Sir.")
+            voice.text_to_speech(f"Goodbye {os.getenv(USER_TITLE)}.")
             CONVERSATION_MODE = False
         except Exception as e:
             print(f"Error: {e}")
