@@ -3,14 +3,6 @@ from langchain.agents import Tool
 def get_tools(voice, net, time):
     """
     Returns the list of LangChain tools for the agent.
-    
-    Args:
-        voice: Voice instance
-        net: Network instance
-        time: Time instance
-    
-    Returns:
-        list: List of Tool objects
     """
     tools = [
         Tool(
