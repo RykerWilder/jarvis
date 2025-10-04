@@ -1,14 +1,18 @@
 import urllib.request
 import socket
+import os
 import requests
 import speedtest
 import webbrowser
+from dotenv import load_dotenv
 from urllib.parse import quote_plus
 import pywhatkit as kit
 from modules.voice import Voice
 
 #instances
 voice = Voice()
+
+load_dotenv()
 
 class Network: 
     def check_connection(self, input_text=""):
@@ -26,19 +30,22 @@ class Network:
         playing speedtest after check internet connection
         """
         if self.check_connection():
-            voice.text_to_speech("Starting speedtest, please attend.")
-            st = speedtest.Speedtest()
-            
-            # download
-            download_speed = st.download() / 1_000_000  
-            
-            # upload
-            upload_speed = st.upload() / 1_000_000 
+            voice.text_to_speech("Starting speedtest, please wait.")
+            try: 
+                st = speedtest.Speedtest()
+                
+                # download
+                download_speed = st.download() / 1_000_000  
+                
+                # upload
+                upload_speed = st.upload() / 1_000_000 
 
-            result = f"Speed test completed. Download speed: {download_speed:.2f} Mbps, Upload speed: {upload_speed:.2f} Mbps"
-            return result
+                result = f"Speed test completed. Download speed: {download_speed:.2f} Mbps, Upload speed: {upload_speed:.2f} Mbps."
+                return result
+            except Exception as e:
+                return f"Error during speedtest {os.getenv(USER_TITLE)}."
         else:
-            return "I don't have access to the internet."
+            return f"I don't have access to the internet {os.getenv(USER_TITLE)}."
 
     def play_music(self, query):
         """
@@ -47,12 +54,12 @@ class Network:
         if self.check_connection():
             try:
                 kit.playonyt(query)
-                return f"Playing {query} on YouTube"
+                return f"Playing {query} on YouTube {os.getenv(USER_TITLE)}."
             
             except Exception as e:
                 return f"Error during playback: {str(e)}"
         else:
-            return "I don't have access to the internet."
+            return f"I don't have access to the internet {os.getenv(USER_TITLE)}."
 
     def search(self, query):
         """
@@ -61,8 +68,8 @@ class Network:
         if self.check_connection:
             try:
                 kit.search(query)
-                return f"Search for '{query}' completed successfully"
+                return f"Search for '{query}' completed successfully {os.getenv(USER_TITLE)}."
             except Exception as e:
-                return f"Search {query} failed."
+                return f"Search {query} failed {os.getenv(USER_TITLE)}."
         else:
-            return "I don't have access to the internet."
+            return f"I don't have access to the internet {os.getenv(USER_TITLE)}."
