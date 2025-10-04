@@ -5,34 +5,16 @@ from langchain.agents import initialize_agent, AgentType, Tool
 # modules
 from modules.voice import Voice
 from modules.network import Network
+from modules.time import Time
+from modules.tools import get_tools
 
 # instances
 voice = Voice()
 net = Network()
+time = Time()
 
 # langchain tools
-tools = [
-    Tool(
-        name="SpeedTest",
-        func=net.execute_speedtest,
-        description="Useful for testing internet speed, measuring download/upload speed, and checking connection performance"
-    ),
-    Tool(
-        name="ConnectionCheck",
-        func=net.check_connection,
-        description="Useful for checking internet connection status, verifying connectivity, and diagnosing network issues"
-    ),
-    Tool(
-        name="PlayingMusic",
-        func=net.play_music,
-        description="Plays music on YouTube by searching for song name and artist. Use this when user asks to play, listen to, or put on a song. Automatically finds and plays the first matching result in the browser. Examples: 'play Bohemian Rhapsody by Queen', 'I want to listen to Imagine by John Lennon'."
-    ),
-    Tool(
-        name="Search",
-        func=net.search,
-        description="Executes a Google search to find information on the web. Use this when user asks to search, look up, or find information about any topic. The function performs an internet search and displays the results. Examples: 'search for weather forecast', 'look up Python documentation', 'find best restaurants in Milan', 'search latest news about technology'."
-    )
-]
+tools = get_tools(voice, net, time)
 
 load_dotenv()
 
@@ -55,12 +37,14 @@ def run_ollama(request):
     # prompt
     system_prompt = """You are Jarvis, an intelligent, conversational AI assistant.
     Your goal is to be helpful, friendly, and informative. You can use available tools when needed to answer questions more accurately.
-    
+
     Available tools:
     - SpeedTest: for testing internet speed and performance
     - ConnectionCheck: for checking internet connection status
-    - MusicPlayer: for playing music on YouTube - use this when user asks to play music, songs, or videos
-    
+    - PlayingMusic: for playing music on YouTube - use this when user asks to play music, songs, or videos
+    - Search: for searching information on Google - use this when user asks to search or look up information
+    - GetTime: for getting the current time and date - use this when user asks what time it is or the current date
+
     Always respond using only plain text without emoticons or emojis."""
     
     full_request = f"{system_prompt}\n\nUser: {request}"

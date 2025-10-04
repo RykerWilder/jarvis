@@ -3,7 +3,7 @@ import threading
 import sys
 import os
 from datetime import datetime
-from sound import Sound
+from modules.sound import Sound
 
 class Time:
     def background_timer(self, seconds=0, minutes=0, hours=0):
@@ -19,5 +19,6 @@ class Time:
         timer_obj.start()
         return timer_obj
 
-    def get_time(self):
-        return datetime.now().strftime("%H:%M")
+    def get_time(self, input_text=""):
+        current_time = datetime.now().strftime("%H:%M")
+        return f"It's {current_time} Sir."
