@@ -69,17 +69,16 @@ def jarvis_manager():
     voice.text_to_speech("Say the trigger word to activate.")
     user_text = voice.speech_recognizer()
     
-    if user_text is None:
-        voice.text_to_speech("I didn't hear anything.")
-        return
-    
-    if user_text.lower() == os.getenv('TRIGGER_WORD').lower():
-        CONVERSATION_MODE = True
-        voice.text_to_speech(f"Hi {os.getenv("USER_TITLE")}, how can I help you?")
-    elif shutdown_command(user_text):
-        voice.text_to_speech(f"Goodbye {os.getenv("USER_TITLE")}.")
-    else:
-        voice.text_to_speech(f"Sorry {os.getenv("USER_TITLE")}, I didn't understand.")
+    while CONVERSATION_MODE == False:
+        if user_text.lower() == os.getenv('TRIGGER_WORD').lower():
+            CONVERSATION_MODE = True
+            voice.text_to_speech(f"Hi {os.getenv("USER_TITLE")}, how can I help you?")
+        elif shutdown_command(user_text):
+            voice.text_to_speech(f"Goodbye {os.getenv("USER_TITLE")}.")
+        elif user_text is None:
+            voice.text_to_speech(f"Could you repeat {os.getenv("USER_TITLE")}?")
+        else:
+            voice.text_to_speech(f"Sorry {os.getenv("USER_TITLE")}, I didn't understand.")
     
     while CONVERSATION_MODE:
         try:
