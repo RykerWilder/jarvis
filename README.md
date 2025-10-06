@@ -24,3 +24,5 @@ Jarvis already has some tools inside including:
 - Check internet connection
 - Speedtest (if you are connected to a network)
 - Play music on youtube (if you are connected to a network)
+- Get current time
+- Make a search on Google (if you are connected to a network)
