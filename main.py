@@ -33,21 +33,14 @@ def run_ollama(request):
         return_intermediate_steps=False,
         early_stopping_method="generate"
     )
-    
-    # prompt
-    system_prompt = """You are Jarvis, an intelligent, conversational AI assistant.
-    Your goal is to be helpful, friendly, and informative. You can use available tools when needed to answer questions more accurately.
 
-    Available tools:
-    - SpeedTest: for testing internet speed and performance
-    - ConnectionCheck: for checking internet connection status
-    - PlayingMusic: for playing music on YouTube - use this when user asks to play music, songs, or videos
-    - Search: for searching information on Google - use this when user asks to search or look up information
-    - GetTime: for getting the current time and date - use this when user asks what time it is or the current date
+    def load_system_prompt():
+        with open('./system_prompt.txt', 'r') as f:
+            return f.read().strip()
 
-    Always respond using only plain text without emoticons or emojis."""
+    SYSTEM_PROMPT = load_system_prompt()
     
-    full_request = f"{system_prompt}\n\nUser: {request}"
+    full_request = f"{SYSTEM_PROMPT}\n\nUser: {request}"
     
     response = agent.invoke({"input": full_request})
     
@@ -65,39 +58,23 @@ def shutdown_command(text):
     return any(phrase in text for phrase in shutdown_phrases)
 
 def jarvis_manager():
-    CONVERSATION_MODE = False
-    voice.text_to_speech("Say the trigger word to activate.")
-    user_text = voice.speech_recognizer()
-    
-    while CONVERSATION_MODE == False:
-        if user_text.lower() == os.getenv('TRIGGER_WORD').lower():
-            CONVERSATION_MODE = True
-            voice.text_to_speech(f"Hi {os.getenv("USER_TITLE")}, how can I help you?")
-        elif shutdown_command(user_text):
-            voice.text_to_speech(f"Goodbye {os.getenv("USER_TITLE")}.")
-        elif user_text is None:
-            voice.text_to_speech(f"Could you repeat {os.getenv("USER_TITLE")}?")
-        else:
-            voice.text_to_speech(f"Sorry {os.getenv("USER_TITLE")}, I didn't understand.")
-    
-    while CONVERSATION_MODE:
+    while True:
         try:
             user_text = voice.speech_recognizer()
-            
+
             if user_text is None:
                 voice.text_to_speech(f"I didn't hear well {os.getenv("USER_TITLE")}. Please try again.")
                 continue
-            
-            if shutdown_command(user_text):
+            elif shutdown_command(user_text):
                 voice.text_to_speech(f"Goodbye {os.getenv("USER_TITLE")}.")
-                CONVERSATION_MODE = False
-            else:
+                break
+            elif os.getenv('TRIGGER_WORD').lower() in user_text.lower():
                 ollama_response = run_ollama(user_text)
                 voice.text_to_speech(ollama_response)
         
         except KeyboardInterrupt:
             voice.text_to_speech(f"Goodbye {os.getenv("USER_TITLE")}.")
-            CONVERSATION_MODE = False
+            break
         except Exception as e:
             print(f"Error: {e}")
             continue
