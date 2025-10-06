@@ -12,12 +12,16 @@ class Voice:
             print("Listening...")
 
             # ambient noise
-            r.adjust_for_ambient_noise(source, duration=1)
+            r.adjust_for_ambient_noise(source, duration=2)
+
+            r.energy_threshold = 400  
+            r.dynamic_energy_threshold = True
+            r.pause_threshold = 1.0
 
             # listening
-            audio = r.listen(source, timeout=5, phrase_time_limit=10)
+            audio = r.listen(source, timeout=5, phrase_time_limit=8)
         try:
-            text = r.recognize_google(audio, language="en-EN")
+            text = r.recognize_google(audio, language="en-US")
             print(f"You said: {text}")
             return text
         except sr.UnknownValueError:
