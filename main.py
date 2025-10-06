@@ -63,7 +63,7 @@ def jarvis_manager():
             user_text = voice.speech_recognizer()
 
             if user_text is None:
-                voice.text_to_speech(f"I didn't hear well {os.getenv("USER_TITLE")}. Please try again.")
+                voice.text_to_speech(f"I didn't understand {os.getenv("USER_TITLE")}. Please try again.")
                 continue
             elif shutdown_command(user_text):
                 voice.text_to_speech(f"Goodbye {os.getenv("USER_TITLE")}.")
