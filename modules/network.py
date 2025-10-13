@@ -77,8 +77,8 @@ class Network:
     def get_weather(self, location):
         if self.check_connection():
             try:
-                url = f"https://www.meteo.it/?1&city={location.replace(' ', '%20')}"
-                kit.open_web(url)
+                url = f"https://www.meteo.it/?1&city={location}"
+                webbrowser.open(url)
                 
                 return f"Weather search for '{location}' opened on meteo.it {os.getenv('USER_TITLE')}."
             except Exception as e:
