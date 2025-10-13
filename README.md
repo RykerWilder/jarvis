@@ -19,10 +19,12 @@ After running the installer, follow the instructions in your terminal to activat
 
 ## Tools
 
-Jarvis already has some tools inside including:
+Jarvis already has some tools inside including: (* if you are connected to a network)
 
 - Check internet connection
-- Speedtest (if you are connected to a network)
-- Play music on youtube (if you are connected to a network)
+- Speedtest *
+- Play music on youtube *
 - Get current time
-- Make a search on Google (if you are connected to a network)
+- Make a search on Google *
+- Run terminal command and stop it
+- Get weather information *
