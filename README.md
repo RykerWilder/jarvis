@@ -26,5 +26,5 @@ Jarvis already has some tools inside including: (* if you are connected to a net
 - Play music on youtube *
 - Get current time
 - Make a search on Google *
-- Run terminal command and stop it
+- Run terminal command
 - Get weather information *

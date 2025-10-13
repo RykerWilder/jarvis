@@ -36,26 +36,3 @@ class Terminal:
                 return"Unsupported operating system."
         except Exception as e:
             return f"Error: {e}"
-    
-    def stop_last_process(self):
-        if not self.processes:
-            return "No processes to interrupt."
-            return
-        
-        process = self.processes.pop()
-        os_type = self.detect_os()
-        
-        try:
-            if os_type == "windows":
-                process.terminate()
-            else:
-                process.send_signal(signal.SIGINT)
-
-            process.wait(timeout=5)
-            return "Process stopped successfully."
-        except subprocess.TimeoutExpired:
-            #if doesn't work kill the process
-            process.kill()
-            return "Process forced to end."
-        except Exception as e:
-            return f"Error: {e}"
