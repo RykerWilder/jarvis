@@ -7,7 +7,7 @@ import webbrowser
 from dotenv import load_dotenv
 from urllib.parse import quote_plus
 import pywhatkit as kit
-from modules.voice import Voice
+from voice import Voice
 
 #instances
 voice = Voice()
@@ -73,3 +73,19 @@ class Network:
                 return f"Search {query} failed {os.getenv("USER_TITLE")}."
         else:
             return f"I don't have access to the internet {os.getenv("USER_TITLE")}."
+
+    def get_weather(self, location):
+        if self.check_connection():
+            try:
+                url = f"https://www.meteo.it/?1&city={location.replace(' ', '%20')}"
+                kit.open_web(url)
+                
+                return f"Weather search for '{location}' opened on meteo.it {os.getenv('USER_TITLE')}."
+            except Exception as e:
+                return f"It was not possible to access the weather in {location}, {os.getenv('USER_TITLE')}. Error: {str(e)}"
+        else:
+            return f"I don't have access to the internet {os.getenv('USER_TITLE')}."
+
+if __name__ == "__main__":
+    net = Network()
+    net.get_weather("Rome")
