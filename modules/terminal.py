@@ -31,4 +31,4 @@ class Terminal:
             else:
                 return "Unsupported operating system."
         except Exception as e:
-            return f"Errore nell'esecuzione: {e}"
+            return f"Error: {e}"
