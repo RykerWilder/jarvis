@@ -34,6 +34,11 @@ def get_tools(voice, net, time, terminal):
             name="RunTerminal",
             func=terminal.run,
             description="Executes a terminal command or program in a visible terminal window on the user's operating system. Works on Linux, macOS, and Windows. Use this when user asks to run a command, execute a program, or launch an application. The command will open in a new terminal window. Examples: 'run cmatrix', 'execute ls', 'launch python script.py', 'run npm start', 'execute git status'."
+        ),
+        Tool(
+            name="GetWeather",
+            func=net.get_weather,
+            description="Gets weather information for a specific location by opening the Italian meteorological service (meteoam.it). Use this when user asks about weather, weather forecast, current conditions, or climate information for a location. The function opens the weather page in the browser. Examples: 'what's the weather in Milan?', 'check the weather for Rome', 'tell me the weather in Turin', 'get weather forecast for Naples'."
         )
     ]
     return tools
