@@ -1,6 +1,6 @@
 from langchain.agents import Tool
 
-def get_tools(voice, net, time):
+def get_tools(voice, net, time, terminal):
     """
     Returns the list of LangChain tools for the agent.
     """
@@ -29,7 +29,11 @@ def get_tools(voice, net, time):
             name="GetTime",
             func=time.get_time,
             description="Gets the current time. Use this when user asks what time it is or needs to know the current hour. Examples: 'what time is it?', 'tell me the time', 'what's the current time?'."
+        ),
+        Tool(
+            name="RunTerminal",
+            func=terminal.run,
+            description="Executes a terminal command or program in a visible terminal window on the user's operating system. Works on Linux, macOS, and Windows. Use this when user asks to run a command, execute a program, or launch an application. The command will open in a new terminal window. Examples: 'run cmatrix', 'execute ls', 'launch python script.py', 'run npm start', 'execute git status'."
         )
     ]
-    
     return tools

@@ -6,12 +6,14 @@ from langchain.agents import initialize_agent, AgentType, Tool
 from modules.voice import Voice
 from modules.network import Network
 from modules.time import Time
+from modules.terminal import Terminal
 from modules.tools import get_tools
 
 # instances
 voice = Voice()
 net = Network()
 time = Time()
+term = Terminal()
 
 # langchain tools
 tools = get_tools(voice, net, time)
