@@ -39,6 +39,11 @@ def get_tools(voice, net, time, terminal):
             name="GetWeather",
             func=net.get_weather,
             description="Gets weather information for a specific location by opening the Italian meteorological service (meteoam.it). Use this when user asks about weather, weather forecast, current conditions, or climate information for a location. The function opens the weather page in the browser. Examples: 'what's the weather in Milan?', 'check the weather for Rome', 'tell me the weather in Turin', 'get weather forecast for Naples'."
+        ),
+        Tool(
+            name="StopProcess",
+            func=terminal.stop_last_process,
+            description="Stops and terminates the last process or command that was running in the terminal. Use this when the user wants to interrupt, kill, cancel, or stop a running program or command. The function will attempt a graceful termination first, and if that fails, it will force-kill the process. Examples: 'stop the current process', 'kill the running command', 'interrupt the program', 'stop execution', 'cancel the running script'."
         )
     ]
     return tools
