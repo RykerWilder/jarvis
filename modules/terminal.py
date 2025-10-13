@@ -1,9 +1,9 @@
 import subprocess
 import platform
+import os
 
 class Terminal:
     def detect_os(self):
-        """Rileva il sistema operativo"""
         system = platform.system()
         if system == "Linux":
             return "linux"
@@ -15,20 +15,24 @@ class Terminal:
             return "unknown"
 
     def run(self, program):
-        """Esegue un programma nel terminale in base all'OS"""
-        os_type = self.detect_os()  # IMPORTANTE: Chiama il metodo con ()
+        os_type = self.detect_os()
         
-        if os_type == "linux":
-            subprocess.Popen(["xterm", "-e", program])
-        elif os_type == "macos":
-            applescript = f'tell application "Terminal" to do script "{program}"'
-            subprocess.Popen(["osascript", "-e", applescript])
-        elif os_type == "windows":
-            subprocess.Popen(f"start cmd /k {program}", shell=True)
-        else:
-            return "Unsupported operating system."
-
-# Esempio di utilizzo
-if __name__ == "__main__":
-    terminal = Terminal()
-    terminal.run("cmatrix")
+        try:
+            if os_type == "linux":
+                # Prova gnome-terminal, altrimenti xterm
+                subprocess.Popen(["gnome-terminal", "--", "bash", "-c", f"{program}; exec bash"])
+                # Alternativa: subprocess.Popen(["xterm", "-hold", "-e", program])
+                
+            elif os_type == "macos":
+                # Apre Terminal.app e esegue il comando
+                applescript = f'tell application "Terminal" to activate\ntell application "Terminal" to do script "{program}"'
+                subprocess.Popen(["osascript", "-e", applescript])
+                
+            elif os_type == "windows":
+                # /k mantiene la finestra aperta dopo l'esecuzione
+                subprocess.Popen(f"start cmd /k {program}", shell=True)
+                
+            else:
+                print("Unsupported operating system.")
+        except Exception as e:
+            print(f"Errore nell'esecuzione: {e}")
