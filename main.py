@@ -16,7 +16,7 @@ time = Time()
 term = Terminal()
 
 # langchain tools
-tools = get_tools(voice, net, time)
+tools = get_tools(voice, net, time, term)
 
 load_dotenv()
 

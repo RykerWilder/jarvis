@@ -7,7 +7,7 @@ import webbrowser
 from dotenv import load_dotenv
 from urllib.parse import quote_plus
 import pywhatkit as kit
-from voice import Voice
+from modules.voice import Voice
 
 #instances
 voice = Voice()
