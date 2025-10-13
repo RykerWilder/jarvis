@@ -19,20 +19,16 @@ class Terminal:
         
         try:
             if os_type == "linux":
-                # Prova gnome-terminal, altrimenti xterm
                 subprocess.Popen(["gnome-terminal", "--", "bash", "-c", f"{program}; exec bash"])
-                # Alternativa: subprocess.Popen(["xterm", "-hold", "-e", program])
                 
             elif os_type == "macos":
-                # Apre Terminal.app e esegue il comando
                 applescript = f'tell application "Terminal" to activate\ntell application "Terminal" to do script "{program}"'
                 subprocess.Popen(["osascript", "-e", applescript])
                 
             elif os_type == "windows":
-                # /k mantiene la finestra aperta dopo l'esecuzione
                 subprocess.Popen(f"start cmd /k {program}", shell=True)
                 
             else:
-                print("Unsupported operating system.")
+                return "Unsupported operating system."
         except Exception as e:
-            print(f"Errore nell'esecuzione: {e}")
+            return f"Errore nell'esecuzione: {e}"
