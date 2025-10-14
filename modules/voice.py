@@ -15,13 +15,13 @@ class Voice:
             r.pause_threshold = 0.5      
             r.phrase_threshold = 0.1      
             # listening
-            audio = r.listen(source, timeout=10, phrase_time_limit=10)
+            audio = r.listen(source, timeout=10, phrase_time_limit=15)
         try:
             text = r.recognize_google(audio, language="en-US")
             print(f"You said: {text}")
             return text
         except sr.UnknownValueError:
-            print("I didn't understand.")
+            return "I didn't understand."
             return None
         except sr.RequestError as e:
             print(f"Error: {e}")
