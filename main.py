@@ -20,6 +20,10 @@ tools = get_tools(voice, net, time, term)
 
 load_dotenv()
 
+def load_system_prompt():
+    with open('./system_prompt.txt', 'r') as f:
+        return f.read().strip()
+
 def run_ollama(request):
     # ollama configuration
     LLM = ChatOllama(model=os.getenv('OLLAMA_MODEL'), reasoning=False, temperature=0)
@@ -35,10 +39,6 @@ def run_ollama(request):
         return_intermediate_steps=False,
         early_stopping_method="generate"
     )
-
-    def load_system_prompt():
-        with open('./system_prompt.txt', 'r') as f:
-            return f.read().strip()
 
     SYSTEM_PROMPT = load_system_prompt()
     
