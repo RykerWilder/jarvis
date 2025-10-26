@@ -1,21 +1,35 @@
 # Jarvis
-is a voice assistant with built-in local AI that uses Ollama. You can modify variables in the .env file, such as TRIGGER_WORD to activate Jarvis, SHUTDOWN_WORD to deactivate it, or, if you prefer to use a different Ollama model, you can modify OLLAMA_MODEL.
+is a voice assistant with built-in local AI that uses Ollama. You can modify variables in the .env file, such as TRIGGER_WORD to activate Jarvis, SHUTDOWN_PHRASES to deactivate it, or, if you prefer to use a different Ollama model, you can modify OLLAMA_MODEL.
 
 ## Installation
 If you run Jarvis on MacOS you probably need to install also flac and portaudio.
-To install Jarvis, you can copy and paste the command into the terminal.
 
+1. Clone the repository
 ```bash
-wget https://raw.githubusercontent.com/rykerwilder/jarvis/main/installer.sh
+git clone https://github.com/RykerWilder/jarvis
 ```
 
-**Run the installer**
-
+2. Create virtual environment and install dependencies
 ```bash
-bash ./installer.sh
+# create venv
+python3 -m venv jarvis-venv
+
+# activate on macos/linux
+source jarvis-venv/bin/activate
+
+# activate con windows
+jarvis-venv\Scripts\activate
+
+#install depndencies
+pip install -r requirements.txt
 ```
 
-After running the installer, follow the instructions in your terminal to activate Jarvis.
+3. copy and paste .env.example
+```bash
+cp .venv.example .env
+```
+
+Now you are ready to use Jarvis, run `python3 main.py`.
 
 ## Tools
 
