@@ -2,20 +2,22 @@ import os
 from dotenv import load_dotenv
 from langchain_ollama import ChatOllama
 from langchain.agents import initialize_agent, AgentType, Tool
-# modules
+#MODULES
 from modules.voice import Voice
 from modules.network import Network
 from modules.time import Time
 from modules.terminal import Terminal
 from modules.tools import get_tools
+from modules.mongodb import MongoDB
 
-# instances
+#INSTANCES
 voice = Voice()
 net = Network()
 time = Time()
 term = Terminal()
+db = MongoDB()
 
-# langchain tools
+#LANGCHAIN TOOLS
 tools = get_tools(voice, net, time, term)
 
 load_dotenv()
@@ -25,10 +27,10 @@ def load_system_prompt():
         return f.read().strip()
 
 def run_ollama(request):
-    # ollama configuration
+    #OLLAMA CONFIG
     LLM = ChatOllama(model=os.getenv('OLLAMA_MODEL'), reasoning=False, temperature=0)
     
-    # agent creation
+    #AGENT CREATION
     agent = initialize_agent(
         tools=tools,
         llm=LLM,
@@ -39,14 +41,32 @@ def run_ollama(request):
         return_intermediate_steps=False,
         early_stopping_method="generate"
     )
-
+    
     SYSTEM_PROMPT = load_system_prompt()
     
-    full_request = f"{SYSTEM_PROMPT}\n\nUser: {request}"
+    conversation_history = db.get_context(user_id="default", limit=5)
+
+    context_string = ""
+    if conversation_history and not isinstance(conversation_history, Exception):
+        #FROM RECENT TO OLD
+        conversation_history.reverse()
+        context_string = "\n\n--- Previous Conversation Context ---\n"
+        for conv in conversation_history:
+            context_string += f"User: {conv['user']}\nAssistant: {conv['assistant']}\n\n"
+        context_string += "--- End of Previous Context ---\n\n"
+    
+    #CONTEXT
+    full_request = f"{SYSTEM_PROMPT}\n{context_string}\nUser: {request}"
     
     response = agent.invoke({"input": full_request})
-    
     final_output = response.get("output", "I couldn't process that request.")
+    
+    #SAVE CONVERSATION
+    db.save_conversation(
+        user_msg=request,
+        ai_response=final_output,
+        user_id="default"
+    )
     
     print("Jarvis:", final_output)
     return final_output 
@@ -63,19 +83,21 @@ def jarvis_manager():
     while True:
         try:
             user_text = voice.speech_recognizer()
-
+            
             if user_text is None:
-                voice.text_to_speech(f"I didn't understand {os.getenv("USER_TITLE")}. Please try again.")
+                voice.text_to_speech(f"I didn't understand {os.getenv('USER_TITLE')}. Please try again.")
                 continue
             elif shutdown_command(user_text):
-                voice.text_to_speech(f"Goodbye {os.getenv("USER_TITLE")}.")
+                voice.text_to_speech(f"Goodbye {os.getenv('USER_TITLE')}.")
+                db.close_connection()
                 break
             elif os.getenv('TRIGGER_WORD').lower() in user_text.lower():
                 ollama_response = run_ollama(user_text)
                 voice.text_to_speech(ollama_response)
-        
+                
         except KeyboardInterrupt:
-            voice.text_to_speech(f"Goodbye {os.getenv("USER_TITLE")}.")
+            voice.text_to_speech(f"Goodbye {os.getenv('USER_TITLE')}.")
+            db.close_connection()
             break
         except Exception as e:
             print(f"Error: {e}")
