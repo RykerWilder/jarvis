@@ -1,3 +1,4 @@
+import os
 from pymongo import MongoClient
 from datetime import datetime
 from dotenv import load_dotenv
@@ -5,8 +6,8 @@ from dotenv import load_dotenv
 class MongoDB:
     def __init__(self):
         load_dotenv()
-        self.client = MongoClient(f"mongodb://{os.getenv("MONGO_ROOT_USERNAME")}:{os.getenv("MONGO_ROOT_PASSWORD")}@mongodb:27017/")
-        self.db = self.client[os.getenv("MONGO_DATABASE")]
+        self.client = MongoClient(f"mongodb://{os.getenv('MONGO_ROOT_USERNAME')}:{os.getenv('MONGO_ROOT_PASSWORD')}@mongodb:27017/")
+        self.db = self.client[os.getenv('MONGO_DATABASE')]
         self.conversations = self.db["conversations"]
     
     def save_conversation(self, user_msg, ai_response, user_id="default"):
