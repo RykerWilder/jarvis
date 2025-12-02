@@ -1,23 +1,23 @@
 import os
 from dotenv import load_dotenv
 from langchain_ollama import ChatOllama
-from langchain.agents import initialize_agent, AgentType, Tool
-#MODULES
+from langchain.agents import create_react_agent, AgentExecutor
+from langchain import hub
+from langchain.prompts import PromptTemplate
+# MODULES
 from modules.voice import Voice
 from modules.network import Network
 from modules.time import Time
 from modules.terminal import Terminal
 from modules.tools import get_tools
-from modules.mongodb import MongoDB
 
-#INSTANCES
+# INSTANCES
 voice = Voice()
 net = Network()
 time = Time()
 term = Terminal()
-db = MongoDB()
 
-#LANGCHAIN TOOLS
+# LANGCHAIN TOOLS
 tools = get_tools(voice, net, time, term)
 
 load_dotenv()
@@ -27,46 +27,34 @@ def load_system_prompt():
         return f.read().strip()
 
 def run_ollama(request):
-    #OLLAMA CONFIG
+    # OLLAMA CONFIG
     LLM = ChatOllama(model=os.getenv('OLLAMA_MODEL'), reasoning=False, temperature=0)
-    
-    #AGENT CREATION
-    agent = initialize_agent(
-        tools=tools,
-        llm=LLM,
-        agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-        verbose=False,
-        handle_parsing_errors=True,
-        max_iterations=3,
-        return_intermediate_steps=False,
-        early_stopping_method="generate"
-    )
     
     SYSTEM_PROMPT = load_system_prompt()
     
-    conversation_history = db.get_context(user_id="default", limit=5)
-
-    context_string = ""
-    if conversation_history and not isinstance(conversation_history, Exception):
-        #FROM RECENT TO OLD
-        conversation_history.reverse()
-        context_string = "\n\n--- Previous Conversation Context ---\n"
-        for conv in conversation_history:
-            context_string += f"User: {conv['user']}\nAssistant: {conv['assistant']}\n\n"
-        context_string += "--- End of Previous Context ---\n\n"
+    base_prompt = hub.pull("hwchase17/react")
     
-    #CONTEXT
-    full_request = f"{SYSTEM_PROMPT}\n{context_string}\nUser: {request}"
-    
-    response = agent.invoke({"input": full_request})
-    final_output = response.get("output", "I couldn't process that request.")
-    
-    #SAVE CONVERSATION
-    db.save_conversation(
-        user_msg=request,
-        ai_response=final_output,
-        user_id="default"
+    custom_prompt = PromptTemplate.from_template(
+        f"{SYSTEM_PROMPT}\n\n" + base_prompt.template
     )
+    
+    agent = create_react_agent(
+        llm=LLM,
+        tools=tools,
+        prompt=custom_prompt
+    )
+    
+    agent_executor = AgentExecutor(
+        agent=agent,
+        tools=tools,
+        verbose=False,
+        handle_parsing_errors=True,
+        max_iterations=3,
+        return_intermediate_steps=False
+    )
+    
+    response = agent_executor.invoke({"input": request})
+    final_output = response.get("output", "I couldn't process that request.")
     
     print("Jarvis:", final_output)
     return final_output 
@@ -89,7 +77,6 @@ def jarvis_manager():
                 continue
             elif shutdown_command(user_text):
                 voice.text_to_speech(f"Goodbye {os.getenv('USER_TITLE')}.")
-                db.close_connection()
                 break
             elif os.getenv('TRIGGER_WORD').lower() in user_text.lower():
                 ollama_response = run_ollama(user_text)
@@ -97,7 +84,6 @@ def jarvis_manager():
                 
         except KeyboardInterrupt:
             voice.text_to_speech(f"Goodbye {os.getenv('USER_TITLE')}.")
-            db.close_connection()
             break
         except Exception as e:
             print(f"Error: {e}")
