@@ -49,7 +49,7 @@ def run_ollama(request):
         tools=tools,
         verbose=False,
         handle_parsing_errors=True,
-        max_iterations=3,
+        max_iterations=10,
         return_intermediate_steps=False
     )
     
