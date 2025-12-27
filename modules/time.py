@@ -4,6 +4,7 @@ import sys
 import os
 from dotenv import load_dotenv
 from datetime import datetime
+from modules.sound import Sound
 
 load_dotenv()
 
