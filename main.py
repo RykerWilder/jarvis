@@ -47,7 +47,7 @@ def run_ollama(request):
     agent_executor = AgentExecutor(
         agent=agent,
         tools=tools,
-        verbose=False,
+        verbose=True,
         handle_parsing_errors=True,
         max_iterations=10,
         return_intermediate_steps=False

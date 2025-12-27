@@ -77,6 +77,7 @@ class Network:
     def get_weather(self, location):
         if self.check_connection():
             try:
+                if not location or location.lower() == "location":location = "Rome"
                 url = f"https://www.meteoam.it/it/meteo-citta/{location}"
                 webbrowser.open(url)
                 
