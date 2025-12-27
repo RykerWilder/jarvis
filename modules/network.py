@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from urllib.parse import quote_plus
 import pywhatkit as kit
 from modules.voice import Voice
+from modules.sound import Sound
 
 #instances
 voice = Voice()
@@ -21,16 +22,15 @@ class Network:
         """
         try:
             urllib.request.urlopen("http://www.google.com", timeout=5)
-            return True
+            return f"The internet connection is currently active, {os.getenv("USER_TITLE")}."
         except (urllib.error.URLError, socket.timeout):
-            return False
+            return f"The internet connection is not available, {os.getenv("USER_TITLE")}."
 
     def execute_speedtest(self, input_text=""):
         """
         playing speedtest after check internet connection
         """
         if self.check_connection():
-            voice.text_to_speech("Starting speedtest, please wait.")
             try: 
                 st = speedtest.Speedtest()
                 
@@ -65,7 +65,7 @@ class Network:
         """
         Execute a Google search
         """
-        if self.check_connection:
+        if self.check_connection():
             try:
                 kit.search(query)
                 return f"Search for '{query}' completed successfully {os.getenv("USER_TITLE")}."

@@ -40,8 +40,14 @@ class Voice:
             print(f"Error: {e}")
             return None
 
-
     def text_to_speech(self, text):
-        format_text = str(text)
-        self.engine.say(format_text)
-        self.engine.runAndWait()
+        try:
+            format_text = str(text)
+            self.engine.say(format_text)
+            self.engine.runAndWait()
+        except Exception as e:
+            print(f"TTS Error: {e}")
+            self.engine = pyttsx3.init()
+            self.engine.say(format_text)
+            self.engine.runAndWait()
+
