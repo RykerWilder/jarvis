@@ -5,3 +5,4 @@ __pycache__/
 jarvis-venv/
 
 .DS_Store
+*.dat
