@@ -74,7 +74,7 @@ def jarvis_manager():
         voice.text_to_speech("Authentication failed. Access denied.")
         return
 
-    voice.text_to_speech(f"Welcome {os.getenv('USER_TITLE')}. I'm is ready.")
+    voice.text_to_speech(f"Welcome {os.getenv('USER_TITLE')}. I'm ready.")
     
     while True:
         try:
