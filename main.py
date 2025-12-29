@@ -1,8 +1,7 @@
 import os
 from dotenv import load_dotenv
 from langchain_ollama import ChatOllama
-from langgraph.prebuilt import create_react_agent
-from langchain_core.messages import SystemMessage
+from langchain.agents import create_agent
 # MODULES
 from modules.voice import Voice
 from modules.network import Network
@@ -10,35 +9,31 @@ from modules.time import Time
 from modules.terminal import Terminal
 from modules.tools import get_tools
 
-
 # INSTANCES
 voice = Voice()
 net = Network()
 time = Time()
 term = Terminal()
 
-
 # LANGCHAIN TOOLS
 tools = get_tools(voice, net, time, term)
 
-
 load_dotenv()
-
 
 def load_system_prompt():
     with open('./system_prompt.txt', 'r') as f:
         return f.read().strip()
-
 
 def run_ollama(request):
     LLM = ChatOllama(model=os.getenv('OLLAMA_MODEL'), temperature=0)
     
     SYSTEM_PROMPT = load_system_prompt()
     
-    agent = create_react_agent(
+    # Usa create_agent con system_prompt invece di state_modifier
+    agent = create_agent(
         model=LLM,
         tools=tools,
-        state_modifier=SystemMessage(content=SYSTEM_PROMPT)
+        system_prompt=SYSTEM_PROMPT
     )
 
     response = agent.invoke({
@@ -50,7 +45,6 @@ def run_ollama(request):
     print("Jarvis:", final_output)
     return final_output 
 
-
 def shutdown_command(text):
     if not text:
         return False
@@ -58,7 +52,6 @@ def shutdown_command(text):
     shutdown_phrases_str = os.getenv('SHUTDOWN_PHRASES', '')
     shutdown_phrases = [phrase.strip() for phrase in shutdown_phrases_str.split(',') if phrase.strip()]
     return any(phrase in text for phrase in shutdown_phrases)
-
 
 def jarvis_manager():
     while True:

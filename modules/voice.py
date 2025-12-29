@@ -25,7 +25,7 @@ class Voice:
         with sr.Microphone(sample_rate=16000) as source:
             print("Listening...")
             # ambient noise
-            r.adjust_for_ambient_noise(source, duration=2)
+            r.adjust_for_ambient_noise(source, duration=0.5)
             r.dynamic_energy_threshold = True
             r.pause_threshold = 0.8         
             # listening
