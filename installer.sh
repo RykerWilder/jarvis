@@ -112,6 +112,9 @@ main() {
     
     check_dependencies
     install_python_deps
+
+    # Copy .env
+    cp .venv.example .env
     
     echo -e "${GREEN}jarvis installed successfully!${NC}"
 }
